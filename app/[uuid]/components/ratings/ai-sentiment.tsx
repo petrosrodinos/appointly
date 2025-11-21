@@ -25,7 +25,7 @@ const AiSentiment = ({ sentiment_text, class_name }: AiSentimentProps) => {
               <Sparkles className="absolute inset-0 m-auto h-5 w-5 text-white drop-shadow-sm dark:text-amber-100 animate-pulse" />
             </div>
             <div className="space-y-1">
-              <CardTitle className="text-lg font-semibold text-foreground">What Customers Say</CardTitle>
+              <CardTitle className="text-base sm:text-lg font-semibold text-foreground">What Customers Say</CardTitle>
               <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">Insights drawn from real customer feedback</p>
             </div>
           </div>

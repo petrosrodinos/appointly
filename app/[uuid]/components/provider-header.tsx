@@ -37,8 +37,8 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-lg font-semibold text-foreground">{provider.title}</h1>
-              <p className="text-sm text-muted-foreground">{getCategoryLabel(provider.category)}</p>
+              <h1 className="text-base sm:text-lg font-semibold text-foreground">{provider.title}</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">{getCategoryLabel(provider.category)}</p>
             </div>
           </div>
           <nav className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">

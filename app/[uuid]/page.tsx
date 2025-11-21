@@ -54,11 +54,11 @@ const ProviderProfilePage = async ({ params }: ProviderProfilePageProps) => {
                   <div id="gallery">
                     <AccountImageGallery images={provider.images} providerTitle={provider.title} />
                   </div>
-                  <div id="faqs">
-                    <ProviderFaqs provider={provider} />
-                  </div>
                   <div id="ratings">
                     <ProviderRatings provider={provider} />
+                  </div>
+                  <div id="faqs">
+                    <ProviderFaqs provider={provider} />
                   </div>
                   <div id="location">
                     <ProviderLocation provider={provider} />

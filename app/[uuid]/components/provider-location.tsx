@@ -19,11 +19,11 @@ export const ProviderLocation = ({ provider }: ProviderLocationProps) => {
   return (
     <Card className="border border-border bg-card shadow-xl">
       <CardHeader className="space-y-2">
-        <CardTitle className="flex items-center gap-2 text-2xl">
-          <MapPin className="h-5 w-5 text-primary" />
+        <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
+          <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           Location
         </CardTitle>
-        <p className="text-muted-foreground">{provider.address}</p>
+        <p className="text-sm sm:text-base text-muted-foreground">{provider.address}</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="overflow-hidden">

@@ -34,28 +34,28 @@ const ProviderRatings = ({ provider }: ProviderRatingsProps) => {
     {
       id: "experience",
       label: "Experience",
-      icon: <Heart className="w-5 h-5 text-red-500" />,
+      icon: <Heart className="w-4 h-4 md:w-5 md:h-5 text-red-500" />,
       rating: averageRating?.ratings_breakdown?.experience || 0,
       description: "How experienced are we",
     },
     {
       id: "punctuality",
       label: "Punctuality",
-      icon: <Clock className="w-5 h-5 text-blue-500" />,
+      icon: <Clock className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />,
       rating: averageRating?.ratings_breakdown?.punctuality || 0,
       description: "How punctual and reliable are we",
     },
     {
       id: "friendliness",
       label: "Friendliness",
-      icon: <Users className="w-5 h-5 text-green-500" />,
+      icon: <Users className="w-4 h-4 md:w-5 md:h-5 text-green-500" />,
       rating: averageRating?.ratings_breakdown?.friendliness || 0,
       description: "How friendly and engaging are we",
     },
     {
       id: "professionalism",
       label: "Professionalism",
-      icon: <Award className="w-5 h-5 text-purple-500" />,
+      icon: <Award className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />,
       rating: averageRating?.ratings_breakdown?.professionalism || 0,
       description: "How professional and skilled are we",
     },
@@ -97,32 +97,32 @@ const ProviderRatings = ({ provider }: ProviderRatingsProps) => {
   return (
     <Card className="shadow-xl border border-border">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-foreground">Ratings</CardTitle>
-        <div className="flex items-center gap-4">
+        <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">Ratings</CardTitle>
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <StarRating rating={overallRating} size="lg" showValue />
-            <span className="text-sm text-muted-foreground">
-              Based on {totalRatings} {totalRatings === 1 ? "review" : "reviews"}
-            </span>
           </div>
+          <span className="text-xs sm:text-sm text-muted-foreground">
+            Based on {totalRatings} {totalRatings === 1 ? "review" : "reviews"}
+          </span>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
           {ratingIndicators.map((indicator) => (
-            <div key={indicator.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-background shadow-sm">{indicator.icon}</div>
+            <div key={indicator.id} className="flex items-center justify-between p-2 md:p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="p-1 md:p-2 rounded-lg bg-background shadow-sm">{indicator.icon}</div>
                 <div>
-                  <h3 className="font-semibold text-foreground">{indicator.label}</h3>
-                  <p className="text-sm text-muted-foreground">{indicator.description}</p>
+                  <h3 className="font-semibold text-sm md:text-base text-foreground">{indicator.label}</h3>
+                  <p className="hidden md:block text-sm text-muted-foreground">{indicator.description}</p>
                 </div>
               </div>
 
               <div className="flex flex-col items-end gap-1">
                 <StarRating rating={indicator.rating} size="sm" />
-                <span className="text-sm font-medium text-muted-foreground">{indicator.rating.toFixed(1)}</span>
+                <span className="text-xs md:text-sm font-medium text-muted-foreground">{indicator.rating.toFixed(1)}</span>
               </div>
             </div>
           ))}

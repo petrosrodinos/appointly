@@ -1,15 +1,23 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { CheckCircle, MapPin, Phone, Mail } from "lucide-react";
 import { getCategoryLabel } from "@/features/account/utils/account.utils";
 import type { Account } from "@/features/account/interfaces/account.interfaces";
 import Image from "next/image";
+import { useState } from "react";
 
 interface ProviderProfileProps {
   provider: Account;
 }
 
 const ProviderProfile = ({ provider }: ProviderProfileProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 200;
+  const shouldTruncate = provider.description && provider.description.length > maxLength;
+  const displayText = shouldTruncate && !isExpanded ? provider.description.slice(0, maxLength) + "..." : provider.description;
+
   return (
     <div className="relative overflow-hidden rounded-2xl bg-card shadow-xl border border-border">
       {provider.banner && (
@@ -38,21 +46,31 @@ const ProviderProfile = ({ provider }: ProviderProfileProps) => {
 
           <div className="flex-1 space-y-4">
             <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">{provider.title}</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">{provider.title}</h1>
               <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="default" className="text-sm px-3 py-1">
+                <Badge variant="default" className="text-xs sm:text-sm px-2 sm:px-3 py-1">
                   {getCategoryLabel(provider.category)}
                 </Badge>
                 {provider.verified && (
-                  <Badge variant="outline" className="text-sm px-3 py-1 border-green-200 text-green-700 dark:text-green-400">
+                  <Badge variant="outline" className="text-xs sm:text-sm px-2 sm:px-3 py-1 border-green-200 text-green-700 dark:text-green-400">
                     <CheckCircle className="w-3 h-3 mr-1" />
-                    Verified Professional
+                    <span className="hidden sm:inline">Verified Professional</span>
+                    <span className="sm:hidden">Verified</span>
                   </Badge>
                 )}
               </div>
             </div>
 
-            {provider.description && <p className="text-muted-foreground leading-relaxed text-lg">{provider.description}</p>}
+            {provider.description && (
+              <div className="space-y-2">
+                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base md:text-lg">{displayText}</p>
+                {shouldTruncate && (
+                  <Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="text-primary hover:text-primary/80 p-0 h-auto font-normal">
+                    {isExpanded ? "Show less" : "Show more"}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

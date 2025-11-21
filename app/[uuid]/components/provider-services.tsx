@@ -25,6 +25,7 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
   const [selectedImages, setSelectedImages] = useState<Array<{ url: string; alt?: string }>>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [expandedServices, setExpandedServices] = useState<Record<string, boolean>>({});
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const utmCampaign = searchParams.get("utm_campaign");
@@ -66,9 +67,21 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
     }));
   };
 
+  const toggleDescription = (event: ReactMouseEvent<HTMLButtonElement>, serviceUuid: string) => {
+    event.stopPropagation();
+    setExpandedDescriptions((previous) => ({
+      ...previous,
+      [serviceUuid]: !previous[serviceUuid],
+    }));
+  };
+
+  const shouldShowMoreButton = (description: string | null | undefined) => {
+    return description && description.length > 150;
+  };
+
   return (
     <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
-      <div className="md:p-8 border-b border-border">
+      <div className="p-6 md:p-8 border-b border-border">
         <h2 className="text-2xl md:text-3xl font-bold  flex items-center gap-3">Our Services</h2>
         <p className="text-slate-600 dark:text-slate-400 mt-2 text-sm md:text-base">Choose from our professional services and book your appointment</p>
       </div>
@@ -77,6 +90,8 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
         <div className="space-y-4">
           {provider.services.map((service) => {
             const isExpanded = !!expandedServices[service.uuid];
+            const isDescriptionExpanded = !!expandedDescriptions[service.uuid];
+            const showDescriptionMore = shouldShowMoreButton(service.description);
 
             return (
               <Card key={service.uuid} className="group hover:shadow-xl transition-all duration-300 border-border hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden bg-card shadow-md hover:shadow-lg cursor-pointer" onClick={() => handleServiceClick(service.uuid)}>
@@ -112,7 +127,16 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
                       <div className="flex flex-col gap-2">
                         <div className="flex-1">
                           <h3 className="text-lg md:text-xl font-semibold text-card-foreground group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors line-clamp-2">{service.name}</h3>
-                          {service.description && <p className="text-muted-foreground text-sm md:text-base mt-1 line-clamp-2">{service.description}</p>}
+                          {service.description && (
+                            <div className="mt-1">
+                              <p className={`text-muted-foreground text-sm md:text-base ${!isDescriptionExpanded && showDescriptionMore ? "line-clamp-2" : ""}`}>{service.description}</p>
+                              {showDescriptionMore && (
+                                <Button variant="ghost" size="sm" className="mt-1 h-auto p-0 text-xs text-primary hover:text-primary" onClick={(event) => toggleDescription(event, service.uuid)}>
+                                  {isDescriptionExpanded ? "Show less" : "Show more"}
+                                </Button>
+                              )}
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           <div className="flex items-center gap-2">
@@ -131,8 +155,8 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
                       {isExpanded && (
                         <div className="space-y-4">
                           <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                              <MapPin className="w-3 h-3" />
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-muted-foreground">
+                              <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>Service Locations</span>
                             </div>
                             <div className="flex flex-wrap gap-2">
@@ -152,8 +176,8 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                              <CreditCard className="w-3 h-3" />
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-medium text-muted-foreground">
+                              <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>Pay With</span>
                             </div>
                             <div className="flex flex-wrap gap-2">

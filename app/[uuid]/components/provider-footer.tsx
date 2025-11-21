@@ -28,14 +28,14 @@ export const ProviderFooter = ({ provider }: ProviderFooterProps) => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-lg font-bold">{provider.title}</h3>
-                <p className="text-sm text-muted-foreground">{getCategoryLabel(provider.category)}</p>
+                <h3 className="text-base sm:text-lg font-bold">{provider.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">{getCategoryLabel(provider.category)}</p>
               </div>
             </div>
             {provider.description && <p className="text-sm text-muted-foreground line-clamp-3">{provider.description}</p>}
           </div>
           <div>
-            <h3 className="font-semibold mb-4">Contact Information</h3>
+            <h3 className="text-sm sm:text-base font-semibold mb-4">Contact Information</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               {provider.email && (
                 <li className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export const ProviderFooter = ({ provider }: ProviderFooterProps) => {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-sm sm:text-base font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <a href="#profile" className="hover:text-primary transition-colors">

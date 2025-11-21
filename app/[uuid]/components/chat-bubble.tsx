@@ -248,7 +248,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
               {showChannelSelection && (
                 <div className="border-t pt-4 space-y-3">
                   <div className="space-y-3">
-                    <Label className="text-sm font-medium">We received your message! Select where you want to receive a confirmation message to continue our discussion in a private chat.</Label>
+                    <Label className="text-xs sm:text-sm font-medium">We received your message! Select where you want to receive a confirmation message to continue our discussion in a private chat.</Label>
                     <RadioGroup onValueChange={setSelectedChannel} defaultValue={selectedChannel} className="flex flex-col space-y-2">
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value={ConfirmationMessageChannels.EMAIL} id="email" />

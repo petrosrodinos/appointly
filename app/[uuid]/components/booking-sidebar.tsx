@@ -40,8 +40,8 @@ export const BookingSidebar = ({ provider }: BookingSidebarProps) => {
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 text-yellow-800 dark:text-yellow-200 mt-0.5 flex-shrink-0" />
               <div>
-                <h3 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-1">Closure Notice</h3>
-                <p className="text-yellow-800 dark:text-yellow-50 text-sm">{closureMessage}</p>
+                <h3 className="text-sm sm:text-base font-semibold text-yellow-900 dark:text-yellow-100 mb-1">Closure Notice</h3>
+                <p className="text-yellow-800 dark:text-yellow-50 text-xs sm:text-sm">{closureMessage}</p>
               </div>
             </div>
           </CardContent>
@@ -55,9 +55,9 @@ export const BookingSidebar = ({ provider }: BookingSidebarProps) => {
               <AvatarFallback className="text-base font-semibold uppercase">{fallbackInitials}</AvatarFallback>
             </Avatar>
             <div className="space-y-2">
-              <p className="text-2xl font-bold text-foreground tracking-wide">{provider.title}</p>
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <span className="text-lg font-semibold text-foreground">{ratingValue.toFixed(1)}</span>
+              <p className="text-xl sm:text-2xl font-bold text-foreground tracking-wide">{provider.title}</p>
+              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                <span className="text-base sm:text-lg font-semibold text-foreground">{ratingValue.toFixed(1)}</span>
                 <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                 <span>
                   {totalRatings} {totalRatings === 1 ? "review" : "reviews"}
@@ -72,8 +72,8 @@ export const BookingSidebar = ({ provider }: BookingSidebarProps) => {
               <div className="space-y-4">
                 <Button variant="ghost" className="w-full px-0 hover:bg-transparent" onClick={() => setShowAllHours((prev) => !prev)}>
                   <div className="flex w-full items-center justify-center gap-2">
-                    <Clock3 className="h-5 w-5 text-muted-foreground" />
-                    <span className={`text-lg font-semibold ${statusColor}`}>{statusLabel}</span>
+                    <Clock3 className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                    <span className={`text-base sm:text-lg font-semibold ${statusColor}`}>{statusLabel}</span>
                     {showAllHours ? <ChevronUp className="h-5 w-5 text-muted-foreground" /> : <ChevronDown className="h-5 w-5 text-muted-foreground" />}
                   </div>
                 </Button>
@@ -118,7 +118,7 @@ export const BookingSidebar = ({ provider }: BookingSidebarProps) => {
             <div className="space-y-3">
               <Button variant="ghost" className="w-full px-0 hover:bg-transparent" onClick={() => setShowContact((prev) => !prev)}>
                 <div className="flex w-full items-center justify-center gap-2">
-                  <span className="text-base font-semibold text-foreground">Contact us</span>
+                  <span className="text-sm sm:text-base font-semibold text-foreground">Contact us</span>
                   {showContact ? <ChevronUp className="h-5 w-5 text-muted-foreground" /> : <ChevronDown className="h-5 w-5 text-muted-foreground" />}
                 </div>
               </Button>

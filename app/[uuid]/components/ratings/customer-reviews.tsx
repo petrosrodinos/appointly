@@ -104,8 +104,8 @@ const CustomerReviews = ({ provider }: CustomerReviewsProps) => {
   return (
     <>
       <div className="mb-4">
-        <h3 className="text-xl font-bold text-foreground">Reviews</h3>
-        <p className="text-sm text-muted-foreground">What our customers are saying</p>
+        <h3 className="text-lg sm:text-xl font-bold text-foreground">Reviews</h3>
+        <p className="text-xs sm:text-sm text-muted-foreground">What our customers are saying</p>
       </div>
 
       <ScrollArea className="w-full max-h-96">
@@ -118,15 +118,15 @@ const CustomerReviews = ({ provider }: CustomerReviewsProps) => {
                 </Avatar>
 
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                       <h4 className="font-semibold text-foreground">
                         {review.client.first_name} {review.client.last_name}
                       </h4>
                     </div>
-                    <div className="text-right">
+                    <div className="flex flex-col sm:items-end gap-1">
                       <StarRating rating={review.total} size="sm" />
-                      <p className="text-xs text-muted-foreground mt-1">{formatDate(review.created_at)}</p>
+                      <p className="text-xs text-muted-foreground">{formatDate(review.created_at)}</p>
                     </div>
                   </div>
 
@@ -145,14 +145,14 @@ const CustomerReviews = ({ provider }: CustomerReviewsProps) => {
                     </div>
                   )}
 
-                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                    <span>Experience: {review.experience}/5</span>
-                    <span>•</span>
-                    <span>Punctuality: {review.punctuality}/5</span>
-                    <span>•</span>
-                    <span>Friendliness: {review.friendliness}/5</span>
-                    <span>•</span>
-                    <span>Professionalism: {review.professionalism}/5</span>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 text-xs text-muted-foreground">
+                    <span className="whitespace-nowrap">Experience: {review.experience}/5</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span className="whitespace-nowrap">Punctuality: {review.punctuality}/5</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span className="whitespace-nowrap">Friendliness: {review.friendliness}/5</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span className="whitespace-nowrap">Professionalism: {review.professionalism}/5</span>
                   </div>
                 </div>
               </div>
