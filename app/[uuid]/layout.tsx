@@ -13,14 +13,11 @@ export const generateMetadata = async ({ params }: ProviderProfilePageProps): Pr
     const { uuid } = await params;
     const accountSeo = await getAccountSeo(uuid);
 
-    if (!accountSeo) {
-      return {
-        title: "Provider Not Found",
-        description: "The requested provider could not be found.",
-      };
+    if (accountSeo) {
+      return accountSeo.metatags;
+
     }
 
-    return accountSeo.metatags;
   } catch (error) {
     return {
       title: "Provider Not Found",
@@ -39,23 +36,23 @@ export default async function ProviderLayout({
   }>;
 }>) {
   const { uuid } = await params;
-  // const theme = await getAccountTheme(uuid);
+  const theme = await getAccountTheme(uuid);
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        // style={{
-        //   ["--color-primary" as any]: theme?.primary,
-        //   ["--color-secondary" as any]: theme?.secondary,
-        //   ["--color-background" as any]: theme?.background,
-        //   ["--color-foreground" as any]: theme?.foreground,
-        //   ["--color-muted" as any]: theme?.muted,
-        //   ["--color-accent" as any]: theme?.accent,
-        //   ["--font-family" as any]: theme?.font_family,
-        //   ["--font-size" as any]: theme?.font_size,
-        //   ["--line-height" as any]: theme?.line_height,
-        //   ["--letter-spacing" as any]: theme?.letter_spacing,
-        // }}
+        style={{
+          ["--color-primary" as any]: theme?.primary,
+          ["--color-secondary" as any]: theme?.secondary,
+          ["--color-background" as any]: theme?.background,
+          ["--color-foreground" as any]: theme?.foreground,
+          ["--color-muted" as any]: theme?.muted,
+          ["--color-accent" as any]: theme?.accent,
+          ["--font-family" as any]: theme?.font_family,
+          ["--font-size" as any]: theme?.font_size,
+          ["--line-height" as any]: theme?.line_height,
+          ["--letter-spacing" as any]: theme?.letter_spacing,
+        }}
         className="antialiased"
       >
         {children}
