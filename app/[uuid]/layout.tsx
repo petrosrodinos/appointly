@@ -15,9 +15,12 @@ export const generateMetadata = async ({ params }: ProviderProfilePageProps): Pr
 
     if (accountSeo) {
       return accountSeo.metatags;
-
     }
 
+    return {
+      title: "Provider",
+      description: "Provider profile page.",
+    };
   } catch (error) {
     return {
       title: "Provider Not Found",
