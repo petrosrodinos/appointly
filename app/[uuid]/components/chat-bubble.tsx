@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PhoneNumber } from "@/components/ui/phone-number";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -74,6 +75,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       phone: client?.phone || "",
       content: "",
       confirmation_message_channel: ConfirmationMessageChannels.EMAIL,
+      phone_country_code: client?.phone_country_code || "+30",
     },
   });
 
@@ -91,6 +93,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       payload.last_name = data.last_name;
       payload.email = data.email;
       payload.phone = data.phone;
+      payload.phone_country_code = data.phone_country_code;
     }
 
     sendMessage(payload, {
@@ -106,6 +109,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
           phone: response.client?.phone || "",
           content: "",
           confirmation_message_channel: ConfirmationMessageChannels.EMAIL,
+          phone_country_code: response.client?.phone_country_code || "+30",
         });
       },
     });
@@ -116,6 +120,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       provider_uuid: uuid,
       client_uuid: client?.uuid,
       content: `I would like to speak to ${provider.title} directly.`,
+      phone_country_code: client?.phone_country_code || "+30",
       human_chat: true,
       confirmation_message_channel: selectedChannel,
     };
@@ -137,6 +142,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       client_uuid: client.uuid,
       content: newMessage,
       human_chat: false,
+      phone_country_code: client?.phone_country_code || "+30",
     };
 
     sendMessage(payload, {
@@ -368,7 +374,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
                       <FormItem>
                         <FormLabel>Phone</FormLabel>
                         <FormControl>
-                          <Input type="tel" placeholder="Enter your phone number" {...field} />
+                          <PhoneNumber placeholder="Enter your phone number" value={field.value} onValueChange={field.onChange} countryCode={form.watch("phone_country_code")} onCountryCodeChange={(code) => form.setValue("phone_country_code", code)} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

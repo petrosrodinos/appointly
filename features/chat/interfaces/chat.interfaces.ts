@@ -46,6 +46,7 @@ export interface CreateMessageLandingDto {
     phone?: string;
     content: string;
     provider_uuid: string;
+    phone_country_code: string;
     client_uuid?: string;
     human_chat?: boolean;
     confirmation_message_channel?: ConfirmationMessageChannel;

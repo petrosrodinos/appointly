@@ -7,6 +7,7 @@ export const contactFormSchema = z.object({
     email: z.string().email("Invalid email address"),
     phone: z.string().min(1, "Phone number is required"),
     content: z.string().min(10, "Message must be at least 10 characters"),
+    phone_country_code: z.string().min(1, "Phone country code is required"),
     confirmation_message_channel: z.enum(Object.values(ConfirmationMessageChannels), {
         message: "Please select where you want to receive the confirmation message",
     }),

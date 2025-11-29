@@ -12,6 +12,7 @@ export interface Account {
     last_name: string;
     email: string;
     phone: string;
+    phone_country_code: string;
     account_type: AccountType;
     category: string;
     title: string;
