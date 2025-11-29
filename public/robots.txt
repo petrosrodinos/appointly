@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://appointly.loqicdev.com
+Host: https://appointly.logiqdev.com
 
 # Sitemaps
-Sitemap: https://appointly.loqicdev.com/sitemap.xml
+Sitemap: https://appointly.logiqdev.com/sitemap.xml
