@@ -49,7 +49,7 @@ const ProviderServices = ({ provider }: ProviderServicesProps) => {
   }
 
   const handleServiceClick = (serviceUuid: string) => {
-    const serviceUrl = `${environments.APP_URL}/book/${serviceUuid}`;
+    const serviceUrl = `${environments.APP_URL}/book?service_uuid=${serviceUuid}`;
     window.open(serviceUrl, "_blank", "noopener,noreferrer");
   };
 
