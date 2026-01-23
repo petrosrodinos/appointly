@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { MessageCircle, Send, Mail, Loader2, Bot } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ReactMarkdown from "react-markdown";
@@ -20,6 +20,9 @@ import { contactFormSchema, type ContactFormType } from "@/features/chat/validat
 import { Account } from "@/features/account/interfaces/account.interfaces";
 import { ChatMessage, ChatMessageTypes, ConfirmationMessageChannels, ConfirmationMessageChannel } from "@/features/chat/interfaces/chat.interfaces";
 import { useClientStore } from "@/stores";
+import { useWebsocket, useWebsocketEvent } from "@/features/websocket/hooks/use-websocket";
+import { WEBSOCKET_EVENTS } from "@/features/websocket/interfaces/websocket.constants";
+import type { ChatMessagePayload } from "@/features/websocket/interfaces/websocket.interfaces";
 
 interface ChatBubbleProps {
   provider: Account;
@@ -33,10 +36,10 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
   const [selectedChannel, setSelectedChannel] = useState<string>(ConfirmationMessageChannels.EMAIL);
   const [newMessage, setNewMessage] = useState("");
   const [selectedSpeakToProvider, setSelectedSpeakToProvider] = useState<boolean | null>(null);
+  const [realtimeMessages, setRealtimeMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { mutate: sendMessage, isPending } = useCreateMessageLanding();
-  const client = useClientStore((state) => state.client);
-  const setClient = useClientStore((state) => state.setClient);
+  const {client, setClient} = useClientStore((state) => state);
 
   const { uuid } = provider;
 
@@ -51,7 +54,51 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     enabled: isOpen,
   });
 
-  const messages = messagesData?.messages ? [...messagesData.messages].reverse() : [];
+  const chatUuid = messagesData?.uuid || null;
+  const { emit, isConnected } = useWebsocket(isOpen ? client?.uuid || null : null);
+
+  useEffect(() => {
+
+    console.log("chatUuid", chatUuid);
+    console.log("isConnected", isConnected);
+
+    if (!chatUuid || !isConnected) return;
+
+    emit(WEBSOCKET_EVENTS.CHAT.JOIN, { chat_uuid: chatUuid });
+
+    return () => {
+      emit(WEBSOCKET_EVENTS.CHAT.LEAVE, { chat_uuid: chatUuid });
+    };
+  }, [chatUuid, isConnected, isOpen, emit]);
+
+  useWebsocketEvent<ChatMessagePayload>(
+    WEBSOCKET_EVENTS.CHAT.MESSAGE_RECEIVED,
+    (payload) => {
+      if (payload.chat_uuid !== chatUuid) return;
+      if (payload.sender_uuid === client?.uuid) return;
+      if (payload.message) {
+        setRealtimeMessages(prev => {
+          const exists = prev.some(m => m.uuid === payload.message_uuid);
+          if (exists) return prev;
+          return [...prev, payload.message as ChatMessage];
+        });
+      }
+    },
+    [chatUuid, client?.uuid]
+  );
+
+  useEffect(() => {
+    if (chatUuid) {
+      setRealtimeMessages([]);
+    }
+  }, [chatUuid]);
+
+  const messages = useMemo(() => {
+    const baseMessages = messagesData?.messages ? [...messagesData.messages].reverse() : [];
+    const existingUuids = new Set(baseMessages.map(m => m.uuid));
+    const newRealtimeMessages = realtimeMessages.filter(m => !existingUuids.has(m.uuid));
+    return [...baseMessages, ...newRealtimeMessages];
+  }, [messagesData?.messages, realtimeMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -169,6 +216,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       setShowChannelSelection(false);
       setNewMessage("");
       setSelectedSpeakToProvider(null);
+      setRealtimeMessages([]);
     }
   };
 
