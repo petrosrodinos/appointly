@@ -10,7 +10,7 @@ import ProviderRatings from "./components/ratings/provider-ratings";
 import { BookingSidebar } from "./components/booking-sidebar";
 import AccountImageGallery from "./components/account-image-gallery";
 import { ProviderFooter } from "./components/provider-footer";
-import { ChatBubble } from "./components/chat-bubble";
+import { ChatBubble } from "./components/chat";
 import ProviderFaqs from "./components/provider-faqs";
 import { ProviderLocation } from "./components/provider-location";
 

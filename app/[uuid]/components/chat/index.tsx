@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
-import { MessageCircle, Send, Mail, Loader2, Bot } from "lucide-react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { MessageCircle, Send, Loader2, Bot } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ReactMarkdown from "react-markdown";
 import { useForm } from "react-hook-form";
@@ -12,17 +12,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { PhoneNumber } from "@/components/ui/phone-number";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ChatLoading } from "@/app/[uuid]/components/chat/components/chat-loading";
 import { useCreateMessageLanding, useGetMessagesLanding } from "@/features/chat/hooks/use-chat";
 import { contactFormSchema, type ContactFormType } from "@/features/chat/validation-schemas/contact-form.schema";
 import { Account } from "@/features/account/interfaces/account.interfaces";
-import { ChatMessage, ChatMessageTypes, ConfirmationMessageChannels, ConfirmationMessageChannel } from "@/features/chat/interfaces/chat.interfaces";
+import { ChatMessage, ChatMessageTypes, ConfirmationMessageChannels } from "@/features/chat/interfaces/chat.interfaces";
 import { useClientStore } from "@/stores";
 import { useWebsocket, useWebsocketEvent } from "@/features/websocket/hooks/use-websocket";
 import { WEBSOCKET_EVENTS } from "@/features/websocket/interfaces/websocket.constants";
-import type { ChatMessagePayload } from "@/features/websocket/interfaces/websocket.interfaces";
+import type { ChatMessagePayload, ChatTypingPayload } from "@/features/websocket/interfaces/websocket.interfaces";
+import { TypingIndicator } from "@/app/[uuid]/components/chat/components/typing-indicator";
 
 interface ChatBubbleProps {
   provider: Account;
@@ -32,14 +31,14 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
   const [showSpeakToProviderPrompt, setShowSpeakToProviderPrompt] = useState(false);
-  const [showChannelSelection, setShowChannelSelection] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState<string>(ConfirmationMessageChannels.EMAIL);
   const [newMessage, setNewMessage] = useState("");
   const [selectedSpeakToProvider, setSelectedSpeakToProvider] = useState<boolean | null>(null);
   const [realtimeMessages, setRealtimeMessages] = useState<ChatMessage[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { mutate: sendMessage, isPending } = useCreateMessageLanding();
-  const {client, setClient} = useClientStore((state) => state);
+  const { client, setClient, chat_uuid, setChatUuid } = useClientStore((state) => state);
 
   const { uuid } = provider;
 
@@ -54,28 +53,28 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     enabled: isOpen,
   });
 
-  const chatUuid = messagesData?.uuid || null;
+  const chatUuid = messagesData?.uuid ||chat_uuid || null;
   const { emit, isConnected } = useWebsocket(isOpen ? client?.uuid || null : null);
 
   useEffect(() => {
-
-    console.log("chatUuid", chatUuid);
-    console.log("isConnected", isConnected);
 
     if (!chatUuid || !isConnected) return;
 
     emit(WEBSOCKET_EVENTS.CHAT.JOIN, { chat_uuid: chatUuid });
 
-    return () => {
-      emit(WEBSOCKET_EVENTS.CHAT.LEAVE, { chat_uuid: chatUuid });
-    };
-  }, [chatUuid, isConnected, isOpen, emit]);
+    // return () => {
+    //   emit(WEBSOCKET_EVENTS.CHAT.LEAVE, { chat_uuid: chatUuid });
+    // };
+  }, [chatUuid, isConnected, emit]);
 
   useWebsocketEvent<ChatMessagePayload>(
     WEBSOCKET_EVENTS.CHAT.MESSAGE_RECEIVED,
     (payload) => {
       if (payload.chat_uuid !== chatUuid) return;
       if (payload.sender_uuid === client?.uuid) return;
+      if (payload.sender_uuid === provider.uuid) {
+        setIsTyping(false);
+      }
       if (payload.message) {
         setRealtimeMessages(prev => {
           const exists = prev.some(m => m.uuid === payload.message_uuid);
@@ -87,11 +86,43 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     [chatUuid, client?.uuid]
   );
 
+  useWebsocketEvent<ChatTypingPayload>(
+    WEBSOCKET_EVENTS.CHAT.TYPING_RECEIVED,
+    (payload) => {
+      if (payload.chat_uuid !== chatUuid) return;
+      if (payload.account_uuid !== provider.uuid) return;
+      setIsTyping(true);
+    },
+    [chatUuid, provider.uuid]
+  );
+
+  useWebsocketEvent<ChatTypingPayload>(
+    WEBSOCKET_EVENTS.CHAT.STOP_TYPING_RECEIVED,
+    (payload) => {
+      if (payload.chat_uuid !== chatUuid) return;
+      if (payload.account_uuid !== provider.uuid) return;
+      setIsTyping(false);
+    },
+    [chatUuid, provider.uuid]
+  );
+
   useEffect(() => {
     if (chatUuid) {
       setRealtimeMessages([]);
+      setIsTyping(false);
     }
   }, [chatUuid]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (messagesData?.uuid && messagesData.uuid !== chat_uuid) {
+      setChatUuid(messagesData.uuid);
+      return;
+    }
+    if (!messagesData?.uuid && chat_uuid) {
+      setChatUuid(null);
+    }
+  }, [isOpen, messagesData?.uuid, chat_uuid, setChatUuid]);
 
   const messages = useMemo(() => {
     const baseMessages = messagesData?.messages ? [...messagesData.messages].reverse() : [];
@@ -101,17 +132,29 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
   }, [messagesData?.messages, realtimeMessages]);
 
   useEffect(() => {
+    if (!isOpen) return;
+    const container = messagesContainerRef.current;
+    if (container) {
+      requestAnimationFrame(() => {
+        container.scrollTop = container.scrollHeight;
+      });
+      return;
+    }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isOpen, isTyping, showSpeakToProviderPrompt]);
 
-  useEffect(() => {
-    if (messages.length > 0 && !showSpeakToProviderPrompt && !showChannelSelection && !messageSent) {
+    useEffect(() => {
+      checkShowSpeakToProviderPrompt();
+    }, [messages,messagesData?.messages, realtimeMessages]);
+
+  const checkShowSpeakToProviderPrompt = useCallback(() => {
+    if (messages.length > 0 && !showSpeakToProviderPrompt && !messageSent) {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage?.type === ChatMessageTypes.AUTO_RESPONSE) {
         setShowSpeakToProviderPrompt(true);
       }
     }
-  }, [messages]);
+  }, []);
 
   const form = useForm<ContactFormType>({
     resolver: zodResolver(contactFormSchema),
@@ -130,7 +173,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     const payload: any = {
       provider_uuid: uuid,
       content: data.content,
-      human_chat: false,
+      human_chat_request: false,
     };
 
     if (client?.uuid) {
@@ -146,9 +189,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     sendMessage(payload, {
       onSuccess: (response) => {
         setClient(response.client);
-        if (!response.chat_agent_enabled) {
-          setShowChannelSelection(true);
-        }
+        setShowSpeakToProviderPrompt(!response.human_chat_request);
         form.reset({
           first_name: response.client?.first_name || "",
           last_name: response.client?.last_name || "",
@@ -162,24 +203,6 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     });
   };
 
-  const handleContactProvider = () => {
-    const payload: any = {
-      provider_uuid: uuid,
-      client_uuid: client?.uuid,
-      content: `I would like to speak to ${provider.title} directly.`,
-      phone_country_code: client?.phone_country_code || "+30",
-      human_chat: true,
-      confirmation_message_channel: selectedChannel,
-    };
-
-    sendMessage(payload, {
-      onSuccess: () => {
-        setMessageSent(true);
-        setShowChannelSelection(false);
-        refetchMessages();
-      },
-    });
-  };
 
   const handleSendNewMessage = () => {
     if (!newMessage.trim() || !client?.uuid) return;
@@ -188,24 +211,35 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       provider_uuid: uuid,
       client_uuid: client.uuid,
       content: newMessage,
-      human_chat: false,
+      human_chat_request: false,
       phone_country_code: client?.phone_country_code || "+30",
     };
 
     sendMessage(payload, {
       onSuccess: (response) => {
-        if (!response.chat_agent_enabled) {
-          setShowChannelSelection(true);
-        }
+        setShowSpeakToProviderPrompt(!response.human_chat_request);
         setNewMessage("");
         refetchMessages();
       },
     });
   };
 
-  const handleSpeakToProvider = (value: boolean) => {
-    setSelectedSpeakToProvider(value);
-    setShowChannelSelection(value);
+  const handleSpeakToProvider = () => {
+    const payload: any = {
+      provider_uuid: uuid,
+      client_uuid: client?.uuid,
+      content: `I would like to speak to ${provider.title} directly.`,
+      phone_country_code: client?.phone_country_code || "+30",
+      human_chat_request: true,
+    };
+
+    sendMessage(payload, {
+      onSuccess: () => {
+        setMessageSent(true);
+        setShowSpeakToProviderPrompt(false);
+        refetchMessages();
+      },
+    });
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -213,20 +247,31 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     if (!open) {
       setMessageSent(false);
       setShowSpeakToProviderPrompt(false);
-      setShowChannelSelection(false);
       setNewMessage("");
       setSelectedSpeakToProvider(null);
       setRealtimeMessages([]);
+      setIsTyping(false);
+      setChatUuid(null);
     }
   };
 
   const hasMessages = messages.length > 0;
+  const showProviderIndicator = useMemo(() => {
+    if (!hasMessages) return false;
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage?.sender_uuid === provider.uuid && lastMessage?.type !== ChatMessageTypes.AUTO_RESPONSE;
+  }, [hasMessages, messages, provider.uuid]);
 
   return (
     <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button size="icon" className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:scale-110 transition-transform z-50">
-          <MessageCircle className="h-6 w-6" />
+          <span className="relative">
+            <MessageCircle className="h-6 w-6" />
+            {showProviderIndicator && (
+              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 ring-2 ring-background" />
+            )}
+          </span>
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md flex flex-col p-0">
@@ -235,23 +280,11 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
           <SheetDescription>{hasMessages ? "Continue our conversation" : "Fill out the form below and we'll get back to you as soon as possible."}</SheetDescription>
         </SheetHeader>
 
-        {isLoadingMessages && client?.uuid && (
-          <div className="flex-1 overflow-y-auto space-y-4 py-4 px-6">
-            <div className="flex justify-start">
-              <Skeleton className="h-12 w-48" />
-            </div>
-            <div className="flex justify-end">
-              <Skeleton className="h-12 w-48 bg-primary/20" />
-            </div>
-            <div className="flex justify-start">
-              <Skeleton className="h-12 w-64" />
-            </div>
-          </div>
-        )}
+        {isLoadingMessages && client?.uuid && <ChatLoading />}
 
-        {hasMessages && !messageSent && (
+        {hasMessages && (
           <div className="flex-1 flex flex-col min-h-0">
-            <div className="flex-1 overflow-y-auto space-y-4 px-6 py-4 min-h-0">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto space-y-4 px-6 py-4 min-h-0">
               {messages.map((message: ChatMessage) => {
                 const isClientMessage = message.sender_uuid === client?.uuid;
                 const isProviderMessage = message.sender_uuid === provider.uuid;
@@ -286,50 +319,29 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
                   </div>
                 );
               })}
-              {showSpeakToProviderPrompt && (
+              {isTyping && (
+                <div className="flex justify-start items-end gap-2">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Bot className="h-5 w-5 text-primary" />
+                    </div>
+                  </div>
+                  <div className="max-w-[80%] rounded-lg p-3 bg-muted">
+                    <TypingIndicator />
+                  </div>
+                </div>
+              )}
+              {showSpeakToProviderPrompt && !isTyping && !isLoadingMessages &&  (
                 <div className="border-t pt-4 space-y-3">
                   <p className="text-sm font-medium">Do you want to speak to {provider.title} directly?</p>
                   <div className="flex gap-2">
-                    <Button onClick={() => handleSpeakToProvider(true)} size="sm" variant={selectedSpeakToProvider === true ? "default" : "outline"}>
+                    <Button disabled={isPending} onClick={() => handleSpeakToProvider()} size="sm" variant={selectedSpeakToProvider === true ? "default" : "outline"}>
                       Yes
                     </Button>
-                    <Button onClick={() => handleSpeakToProvider(false)} size="sm" variant={selectedSpeakToProvider === false ? "default" : "outline"}>
-                      No
-                    </Button>
                   </div>
                 </div>
               )}
-              {showChannelSelection && (
-                <div className="border-t pt-4 space-y-3">
-                  <div className="space-y-3">
-                    <Label className="text-xs sm:text-sm font-medium">We received your message! Select where you want to receive a confirmation message to continue our discussion in a private chat.</Label>
-                    <RadioGroup onValueChange={setSelectedChannel} defaultValue={selectedChannel} className="flex flex-col space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value={ConfirmationMessageChannels.EMAIL} id="email" />
-                        <Label htmlFor="email" className="font-normal cursor-pointer">
-                          Send me an email
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value={ConfirmationMessageChannels.SMS} id="sms" />
-                        <Label htmlFor="sms" className="font-normal cursor-pointer">
-                          Send me an SMS
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  <Button onClick={handleContactProvider} disabled={isPending} className="w-full">
-                    {isPending ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      "Continue Chat"
-                    )}
-                  </Button>
-                </div>
-              )}
+         
               <div ref={messagesEndRef} />
             </div>
             {client?.uuid && (
@@ -355,23 +367,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
           </div>
         )}
 
-        {messageSent && (
-          <div className="px-6 py-4 space-y-4">
-            <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg flex items-start gap-3">
-              <Mail className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-muted-foreground">
-                Please check your
-                <span className="font-semibold text-foreground">{selectedChannel === ConfirmationMessageChannels.EMAIL ? " email " : " SMS "}</span>
-                inbox to continue our discussion in a private chat.
-              </p>
-            </div>
-            <Button onClick={() => setMessageSent(false)} className="w-full" variant="outline">
-              <Send className="mr-2 h-4 w-4" />
-              Send Another Message
-            </Button>
-          </div>
-        )}
-        {!hasMessages && !messageSent && (
+        {!hasMessages && (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4 overflow-y-auto">
               {!client?.uuid && (
