@@ -1,25 +1,20 @@
-"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { getCategoryLabel } from "@/features/account/utils/account.utils";
 import type { Account } from "@/features/account/interfaces/account.interfaces";
 import Image from "next/image";
-import { useState } from "react";
 
 interface ProviderProfileProps {
   provider: Account;
 }
 
 const ProviderProfile = ({ provider }: ProviderProfileProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const maxLength = 200;
   const shouldTruncate = provider.description && provider.description.length > maxLength;
-  const displayText = shouldTruncate && !isExpanded ? provider.description.slice(0, maxLength) + "..." : provider.description;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-card shadow-xl border border-border">
+    <article className="relative overflow-hidden rounded-2xl bg-card shadow-xl border border-border">
       {provider.banner && (
         <div className="relative h-64 md:h-80">
           <Image src={provider.banner.url || "/placeholder-banner.jpg"} alt={`${provider.title} banner`} fill sizes="100vw" className="object-cover" priority />
@@ -45,7 +40,7 @@ const ProviderProfile = ({ provider }: ProviderProfileProps) => {
           </div>
 
           <div className="flex-1 space-y-4">
-            <div>
+            <header>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2">{provider.title}</h1>
               <div className="flex flex-wrap gap-2 mb-6">
                 <Badge variant="default" className="text-xs sm:text-sm px-2 sm:px-3 py-1">
@@ -59,22 +54,27 @@ const ProviderProfile = ({ provider }: ProviderProfileProps) => {
                   </Badge>
                 )}
               </div>
-            </div>
+            </header>
 
             {provider.description && (
               <div className="space-y-2">
-                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base md:text-lg">{displayText}</p>
-                {shouldTruncate && (
-                  <Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="text-primary hover:text-primary/80 p-0 h-auto font-normal">
-                    {isExpanded ? "Show less" : "Show more"}
-                  </Button>
+                {shouldTruncate ? (
+                  <details className="group">
+                    <summary className="list-none cursor-pointer space-y-2">
+                      <p className="text-muted-foreground leading-relaxed text-sm sm:text-base md:text-lg line-clamp-3 group-open:line-clamp-none">{provider.description}</p>
+                      <span className="text-sm text-primary group-open:hidden">Show more</span>
+                      <span className="hidden text-sm text-primary group-open:inline">Show less</span>
+                    </summary>
+                  </details>
+                ) : (
+                  <p className="text-muted-foreground leading-relaxed text-sm sm:text-base md:text-lg">{provider.description}</p>
                 )}
               </div>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

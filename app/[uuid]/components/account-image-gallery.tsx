@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye } from "lucide-react";
-import ImageModal from "./image-modal";
+import ImageModal from "./services/image-modal";
 import type { Document } from "@/features/documents/interfaces/documents.interfaces";
 
 interface AccountImageGalleryProps {

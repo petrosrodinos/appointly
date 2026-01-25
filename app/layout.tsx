@@ -18,11 +18,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Appointmy - Appointment Booking Platform",
-  description: "Transform your business with Appointmy's powerful appointment booking platform. Create branded booking sites, manage customers, automate communications, and grow your business with our comprehensive SaaS solution.",
-  keywords: "appointment booking, SaaS, multi-tenant, business management, customer communication, automated messaging, booking platform",
+  description: "Transform your business with Appointmy's powerful appointment booking platform. Create branded booking sites, manage customers, automate communications, and grow your business with our multi-channel campaign creation system",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
   openGraph: {
     title: "Appointmy - Appointment Booking Platform",
-    description: "Transform your business with Appointmy's powerful appointment booking platform. Create branded booking sites, manage customers, automate communications, and grow your business.",
+    description: "Transform your business with Appointmy's powerful appointment booking platform. Create branded booking sites, manage customers, automate communications, and grow your business with our multi-channel campaign creation system",
     type: "website",
   },
 };

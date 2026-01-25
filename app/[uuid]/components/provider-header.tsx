@@ -70,7 +70,7 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
                 <SheetHeader>
                   <SheetTitle>Navigation</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col gap-4">
+                <nav className="flex flex-col gap-4">
                   <SheetClose asChild>
                     <button onClick={() => scrollToSection("profile")} className="text-left text-sm font-medium hover:text-primary transition-colors">
                       Profile
@@ -91,7 +91,7 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
                       Ratings
                     </button>
                   </SheetClose>
-                </div>
+                </nav>
               </SheetContent>
             </Sheet>
           </div>

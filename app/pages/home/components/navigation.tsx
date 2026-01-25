@@ -1,8 +1,5 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Calendar } from "lucide-react";
 import { environments } from "@/config/environments";
 
 export const Navigation = () => {
@@ -11,8 +8,8 @@ export const Navigation = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <Calendar className="h-5 w-5 text-primary-foreground" />
+            <div className="h-8 w-8 rounded-lg  flex items-center justify-center">
+              <img src="/favicon.ico" alt={`${environments.APP_NAME} logo`} className="h-7 w-7" />
             </div>
             <span className="text-xl font-bold">{environments.APP_NAME}</span>
           </div>
@@ -32,11 +29,15 @@ export const Navigation = () => {
           </div>
           <div className="flex items-center space-x-4">
             <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={() => window.open(`${environments.APP_URL}/auth/sign-in`, "_blank")}>
-              Sign In
+            <Button asChild variant="ghost" size="sm">
+              <a href={`${environments.APP_URL}/auth/sign-in`} target="_blank" rel="noopener noreferrer">
+                Sign In
+              </a>
             </Button>
-            <Button size="sm" onClick={() => window.open(`${environments.APP_URL}/auth/sign-up`, "_blank")}>
-              Start Free Trial
+            <Button asChild size="sm">
+              <a href={`${environments.APP_URL}/auth/sign-up`} target="_blank" rel="noopener noreferrer">
+                Start Free Trial
+              </a>
             </Button>
           </div>
         </div>
