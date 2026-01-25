@@ -42,7 +42,7 @@ export const websocketConnect = (clientUuid: string): void => {
 
     socket = io(wsUrl, {
         auth: { client_uuid: clientUuid },
-        transports: ['websocket', 'polling'],
+        transports: ['websocket'],
         reconnection: true,
         reconnectionDelay: 3000,
         reconnectionAttempts: 10,
