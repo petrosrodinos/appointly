@@ -22,7 +22,7 @@ export const TestimonialsSection = () => {
               <p className="text-muted-foreground mb-4">"Appointly transformed our booking process completely. Our customers love the seamless experience, and we've seen a 40% increase in bookings since switching."</p>
               <div className="flex items-center">
                 <Avatar className="h-10 w-10 mr-3">
-                  <AvatarImage src="/api/placeholder/40/40" />
+                  <AvatarImage src="/api/placeholder/40/40" alt="Sarah Martinez" />
                   <AvatarFallback>SM</AvatarFallback>
                 </Avatar>
                 <div>
@@ -43,7 +43,7 @@ export const TestimonialsSection = () => {
               <p className="text-muted-foreground mb-4">"The automated messaging feature is a game-changer. We never miss a follow-up, and our customer satisfaction has improved dramatically."</p>
               <div className="flex items-center">
                 <Avatar className="h-10 w-10 mr-3">
-                  <AvatarImage src="/api/placeholder/40/40" />
+                  <AvatarImage src="/api/placeholder/40/40" alt="David Johnson" />
                   <AvatarFallback>DJ</AvatarFallback>
                 </Avatar>
                 <div>
@@ -64,7 +64,7 @@ export const TestimonialsSection = () => {
               <p className="text-muted-foreground mb-4">"The analytics dashboard gives us incredible insights into our business. We can now make data-driven decisions that actually impact our bottom line."</p>
               <div className="flex items-center">
                 <Avatar className="h-10 w-10 mr-3">
-                  <AvatarImage src="/api/placeholder/40/40" />
+                  <AvatarImage src="/api/placeholder/40/40" alt="Lisa Chen" />
                   <AvatarFallback>LC</AvatarFallback>
                 </Avatar>
                 <div>

@@ -21,7 +21,7 @@ import { useClientStore } from "@/stores";
 import { useWebsocket, useWebsocketEvent } from "@/features/websocket/hooks/use-websocket";
 import { WEBSOCKET_EVENTS } from "@/features/websocket/interfaces/websocket.constants";
 import type { ChatMessagePayload, ChatTypingPayload } from "@/features/websocket/interfaces/websocket.interfaces";
-import { TypingIndicator } from "@/app/[uuid]/components/chat/components/typing-indicator";
+import { TypingIndicator } from "./components/typing-indicator";
 
 interface ChatBubbleProps {
   provider: Account;
@@ -38,7 +38,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { mutate: sendMessage, isPending } = useCreateMessageLanding();
-  const { client, setClient, chat_uuid, setChatUuid } = useClientStore((state) => state);
+  const { client, setClient, clearClient, chat_uuid, setChatUuid } = useClientStore((state) => state);
 
   const { uuid } = provider;
 
@@ -53,7 +53,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     enabled: isOpen,
   });
 
-  const chatUuid = messagesData?.uuid ||chat_uuid || null;
+  const chatUuid = messagesData?.uuid || chat_uuid || null;
   const { emit, isConnected } = useWebsocket(isOpen ? client?.uuid || null : null);
 
   useEffect(() => {
@@ -119,8 +119,9 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
       setChatUuid(messagesData.uuid);
       return;
     }
-    if (!messagesData?.uuid && chat_uuid) {
+    if (!messagesData?.uuid) {
       setChatUuid(null);
+      clearClient();
     }
   }, [isOpen, messagesData?.uuid, chat_uuid, setChatUuid]);
 
@@ -200,6 +201,9 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
           phone_country_code: response.client?.phone_country_code || "+30",
         });
       },
+      onError: () => {
+        clearClient();
+      },
     });
   };
 
@@ -220,6 +224,9 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
         setShowSpeakToProviderPrompt(!response.human_chat_request);
         setNewMessage("");
         refetchMessages();
+      },
+      onError: () => {
+        clearClient();
       },
     });
   };

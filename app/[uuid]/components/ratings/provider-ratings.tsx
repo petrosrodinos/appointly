@@ -94,6 +94,10 @@ const ProviderRatings = ({ provider }: ProviderRatingsProps) => {
     );
   }
 
+  if(totalRatings === 0) {
+    return null;
+  }
+
   return (
     <Card className="shadow-xl border border-border">
       <CardHeader>

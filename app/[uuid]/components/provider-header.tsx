@@ -1,6 +1,9 @@
 "use client";
 
+import { Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { getCategoryLabel } from "@/features/account/utils/account.utils";
 import type { Account } from "@/features/account/interfaces/account.interfaces";
@@ -36,7 +39,7 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
                 {provider.last_name[0]}
               </AvatarFallback>
             </Avatar>
-            <div>
+            <div className="md:-mt-4">
               <h1 className="text-base sm:text-lg font-semibold text-foreground">{provider.title}</h1>
               <p className="text-xs sm:text-sm text-muted-foreground">{getCategoryLabel(provider.category)}</p>
             </div>
@@ -55,7 +58,43 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
               Ratings
             </button>
           </nav>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="flex flex-col gap-6">
+                <SheetHeader>
+                  <SheetTitle>Navigation</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-4">
+                  <SheetClose asChild>
+                    <button onClick={() => scrollToSection("profile")} className="text-left text-sm font-medium hover:text-primary transition-colors">
+                      Profile
+                    </button>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <button onClick={() => scrollToSection("gallery")} className="text-left text-sm font-medium hover:text-primary transition-colors">
+                      Gallery
+                    </button>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <button onClick={() => scrollToSection("services")} className="text-left text-sm font-medium hover:text-primary transition-colors">
+                      Services
+                    </button>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <button onClick={() => scrollToSection("ratings")} className="text-left text-sm font-medium hover:text-primary transition-colors">
+                      Ratings
+                    </button>
+                  </SheetClose>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
