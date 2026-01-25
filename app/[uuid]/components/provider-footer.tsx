@@ -36,32 +36,34 @@ export const ProviderFooter = ({ provider }: ProviderFooterProps) => {
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-semibold mb-4">Contact Information</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              {provider.email && (
-                <li className="flex items-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  <a href={`mailto:${provider.email}`} className="hover:text-primary transition-colors">
-                    {provider.email}
-                  </a>
-                </li>
-              )}
-              {provider.phone && (
-                <li className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  <a href={`tel:${provider.phone}`} className="hover:text-primary transition-colors">
-                    {provider.phone}
-                  </a>
-                </li>
-              )}
-              {provider.address && (
-                <li className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <a href={getGoogleMapsUrl(provider.coordinates) ?? ""} target="_blank" className="hover:text-primary transition-colors">
-                    {provider.address}
-                  </a>
-                </li>
-              )}
-            </ul>
+            <address className="not-italic">
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                {provider.email && (
+                  <li className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    <a href={`mailto:${provider.email}`} className="hover:text-primary transition-colors">
+                      {provider.email}
+                    </a>
+                  </li>
+                )}
+                {provider.phone && (
+                  <li className="flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    <a href={`tel:${provider.phone}`} className="hover:text-primary transition-colors">
+                      {provider.phone}
+                    </a>
+                  </li>
+                )}
+                {provider.address && (
+                  <li className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    <a href={getGoogleMapsUrl(provider.coordinates) ?? ""} target="_blank" className="hover:text-primary transition-colors">
+                      {provider.address}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </address>
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-semibold mb-4">Quick Links</h3>

@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, MapPin, Phone, Mail } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { getCategoryLabel } from "@/features/account/utils/account.utils";
 import type { Account } from "@/features/account/interfaces/account.interfaces";
 import Image from "next/image";

@@ -38,37 +38,38 @@ const ProviderProfilePage = async ({ params }: ProviderProfilePageProps) => {
   return (
     <TooltipProvider>
       <div className="min-h-screen">
-        <div className="relative">
+        <ProviderHeader provider={provider} />
+        <main className="relative">
           <div className="relative">
-            <ProviderHeader provider={provider} />
-
             <div className="container mx-auto px-4 py-8">
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2 space-y-4">
-                  <div id="profile">
+                  <section id="profile">
                     <ProviderProfile provider={provider} />
-                  </div>
-                  <div id="services">
+                  </section>
+                  <section id="services">
                     <ProviderServices provider={provider} />
-                  </div>
-                  <div id="gallery">
+                  </section>
+                  <section id="gallery">
                     <AccountImageGallery images={provider.images} providerTitle={provider.title} />
-                  </div>
-                  <div id="ratings">
+                  </section>
+                  <section id="ratings">
                     <ProviderRatings provider={provider} />
-                  </div>
-                  <div id="faqs">
+                  </section>
+                  <section id="faqs">
                     <ProviderFaqs provider={provider} />
-                  </div>
-                  <div id="location">
+                  </section>
+                  <section id="location">
                     <ProviderLocation provider={provider} />
-                  </div>
+                  </section>
                 </div>
-                <BookingSidebar provider={provider} />
+                <aside>
+                  <BookingSidebar provider={provider} />
+                </aside>
               </div>
             </div>
           </div>
-        </div>
+        </main>
         <ProviderFooter provider={provider} />
         <ChatBubble provider={provider} />
       </div>

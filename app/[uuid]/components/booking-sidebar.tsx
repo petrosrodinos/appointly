@@ -109,11 +109,11 @@ export const BookingSidebar = ({ provider }: BookingSidebarProps) => {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <MapPin className="w-5 h-5" />
               </div>
-              <div className="text-sm text-muted-foreground">
+              <address className="text-sm text-muted-foreground not-italic">
                 <a href={getGoogleMapsUrl(provider.coordinates) ?? ""} target="_blank" className="hover:text-primary transition-colors">
                   {provider.address}
                 </a>
-              </div>
+              </address>
             </div>
             <div className="space-y-3">
               <Button variant="ghost" className="w-full px-0 hover:bg-transparent" onClick={() => setShowContact((prev) => !prev)}>

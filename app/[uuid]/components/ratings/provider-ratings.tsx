@@ -101,7 +101,7 @@ const ProviderRatings = ({ provider }: ProviderRatingsProps) => {
   return (
     <Card className="shadow-xl border border-border">
       <CardHeader>
-        <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">Ratings</CardTitle>
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground">Ratings</h2>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <StarRating rating={overallRating} size="lg" showValue />

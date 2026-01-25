@@ -40,7 +40,7 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
               </AvatarFallback>
             </Avatar>
             <div className="md:-mt-4">
-              <h1 className="text-base sm:text-lg font-semibold text-foreground">{provider.title}</h1>
+              <p className="text-base sm:text-lg font-semibold text-foreground">{provider.title}</p>
               <p className="text-xs sm:text-sm text-muted-foreground">{getCategoryLabel(provider.category)}</p>
             </div>
           </div>
@@ -48,11 +48,11 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
             <button onClick={() => scrollToSection("profile")} className="text-sm font-medium hover:text-primary transition-colors">
               Profile
             </button>
-            <button onClick={() => scrollToSection("gallery")} className="text-sm font-medium hover:text-primary transition-colors">
-              Gallery
-            </button>
             <button onClick={() => scrollToSection("services")} className="text-sm font-medium hover:text-primary transition-colors">
               Services
+            </button>
+            <button onClick={() => scrollToSection("gallery")} className="text-sm font-medium hover:text-primary transition-colors">
+              Gallery
             </button>
             <button onClick={() => scrollToSection("ratings")} className="text-sm font-medium hover:text-primary transition-colors">
               Ratings
@@ -77,13 +77,13 @@ const ProviderHeader = ({ provider }: ProviderHeaderProps) => {
                     </button>
                   </SheetClose>
                   <SheetClose asChild>
-                    <button onClick={() => scrollToSection("gallery")} className="text-left text-sm font-medium hover:text-primary transition-colors">
-                      Gallery
-                    </button>
-                  </SheetClose>
                   <SheetClose asChild>
                     <button onClick={() => scrollToSection("services")} className="text-left text-sm font-medium hover:text-primary transition-colors">
                       Services
+                    </button>
+                  </SheetClose>
+                    <button onClick={() => scrollToSection("gallery")} className="text-left text-sm font-medium hover:text-primary transition-colors">
+                      Gallery
                     </button>
                   </SheetClose>
                   <SheetClose asChild>
