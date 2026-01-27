@@ -3,6 +3,7 @@ import { Coordinates } from "@/features/google-maps/interfaces/address.interface
 import { Service } from "@/features/services/interfaces/services.interfaces";
 import { OpeningHoursResponse } from "@/features/opening-hours/interfaces/opening-hours.interfaces";
 import { ClosurePeriod } from "@/features/closure-periods/interfaces/closure-periods.interfaces";
+import { AccountTheme } from "@/features/account-themes/interfaces/account-themes.interfaces";
 
 export interface Account {
     id: string;
@@ -38,6 +39,7 @@ export interface Account {
     created_at: string;
     updated_at: string;
     seo: SeoResponse;
+    account_theme: AccountTheme;
 }
 
 

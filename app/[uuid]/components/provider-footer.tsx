@@ -97,7 +97,7 @@ export const ProviderFooter = ({ provider }: ProviderFooterProps) => {
             © {currentYear} {provider.title}. All rights reserved.
           </p>
           <Link href={environments.LANDING_URL || ""} target="_blank" className="text-sm text-foreground font-medium mt-4 md:mt-0 hover:text-primary transition-colors">
-            Powered by Appointly
+            Powered by {environments.APP_NAME}
           </Link>
         </div>
       </div>

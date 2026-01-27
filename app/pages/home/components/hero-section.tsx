@@ -34,10 +34,6 @@ export const HeroSection = () => {
           <ul className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
             <li className="flex items-center bg-card/50 px-4 py-2 rounded-full">
               <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-              No credit card required
-            </li>
-            <li className="flex items-center bg-card/50 px-4 py-2 rounded-full">
-              <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
               14-day free trial
             </li>
             <li className="flex items-center bg-card/50 px-4 py-2 rounded-full">

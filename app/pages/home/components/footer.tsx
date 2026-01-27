@@ -1,4 +1,5 @@
 import { Separator } from "@/components/ui/separator";
+import { environments } from "@/config/environments";
 import { Calendar } from "lucide-react";
 
 export const Footer = () => {
@@ -11,7 +12,7 @@ export const Footer = () => {
               <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
                 <Calendar className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">Appointly</span>
+              <span className="text-xl font-bold">{environments.APP_NAME}</span>
             </div>
             <p className="text-muted-foreground">The complete appointment booking solution for modern businesses.</p>
           </section>
@@ -93,7 +94,7 @@ export const Footer = () => {
         </div>
         <Separator className="my-8" />
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">© 2024 Appointly. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">© 2024 {environments.APP_NAME}. All rights reserved.</p>
           <nav className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               Terms

@@ -1,4 +1,5 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { environments } from "@/config/environments";
 
 export const FaqSection = () => {
   return (
@@ -6,14 +7,14 @@ export const FaqSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <header className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Everything you need to know about Appointly</p>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Everything you need to know about {environments.APP_NAME}</p>
         </header>
 
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
               <AccordionTrigger>How does the multi-tenant system work?</AccordionTrigger>
-              <AccordionContent>Each business gets their own branded booking site with custom domain, colors, logo, and content. Your customers will only see your brand, not Appointly's branding. You have complete control over the look and feel of your booking experience.</AccordionContent>
+              <AccordionContent>Each business gets their own branded booking site with custom domain, colors, logo, and content. Your customers will only see your brand, not {environments.APP_NAME}'s branding. You have complete control over the look and feel of your booking experience.</AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
               <AccordionTrigger>Can I integrate with my existing website?</AccordionTrigger>
