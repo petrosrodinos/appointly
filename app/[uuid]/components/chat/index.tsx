@@ -50,7 +50,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     provider_uuid: uuid,
     client_uuid: client?.uuid || "",
     include_messages: true,
-    enabled: isOpen,
+    enabled: isOpen && !!client?.uuid,
   });
 
   const chatUuid = messagesData?.uuid || chat_uuid || null;
@@ -121,9 +121,9 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     }
     if (!messagesData?.uuid) {
       setChatUuid(null);
-      clearClient();
+      // clearClient();
     }
-  }, [isOpen, messagesData?.uuid, chat_uuid, setChatUuid]);
+  }, [isOpen, messagesData, chat_uuid, setChatUuid]);
 
   const messages = useMemo(() => {
     const baseMessages = messagesData?.messages ? [...messagesData.messages].reverse() : [];
@@ -160,15 +160,27 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
   const form = useForm<ContactFormType>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      first_name: client?.first_name || "",
-      last_name: client?.last_name || "",
-      email: client?.email || "",
-      phone: client?.phone || "",
+      first_name: client?.first_name,
+      last_name: client?.last_name,
+      email: client?.email,
+      phone: client?.phone,
       content: "",
       confirmation_message_channel: ConfirmationMessageChannels.EMAIL,
       phone_country_code: client?.phone_country_code || "+30",
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      first_name: client?.first_name,
+      last_name: client?.last_name,
+      email: client?.email,
+      phone: client?.phone,
+      content: form.getValues("content"),
+      confirmation_message_channel: ConfirmationMessageChannels.EMAIL,
+      phone_country_code: client?.phone_country_code || "+30",
+    });
+  }, [client]);
 
   const onSubmit = (data: ContactFormType) => {
     const payload: any = {
@@ -190,6 +202,7 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     sendMessage(payload, {
       onSuccess: (response) => {
         setClient(response.client);
+        setChatUuid(response.chat_uuid);
         setShowSpeakToProviderPrompt(!response.human_chat_request);
         form.reset({
           first_name: response.client?.first_name || "",
@@ -200,9 +213,6 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
           confirmation_message_channel: ConfirmationMessageChannels.EMAIL,
           phone_country_code: response.client?.phone_country_code || "+30",
         });
-      },
-      onError: () => {
-        clearClient();
       },
     });
   };
@@ -222,11 +232,9 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     sendMessage(payload, {
       onSuccess: (response) => {
         setShowSpeakToProviderPrompt(!response.human_chat_request);
+        setChatUuid(response.chat_uuid);
         setNewMessage("");
         refetchMessages();
-      },
-      onError: () => {
-        clearClient();
       },
     });
   };
@@ -241,7 +249,8 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
     };
 
     sendMessage(payload, {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        setChatUuid(response.chat_uuid);
         setMessageSent(true);
         setShowSpeakToProviderPrompt(false);
         refetchMessages();
@@ -351,7 +360,6 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
          
               <div ref={messagesEndRef} />
             </div>
-            {client?.uuid && (
               <div className="border-t px-6 py-4">
                 <div className="flex gap-2">
                   <Input
@@ -370,7 +378,6 @@ export const ChatBubble = ({ provider }: ChatBubbleProps) => {
                   </Button>
                 </div>
               </div>
-            )}
           </div>
         )}
 

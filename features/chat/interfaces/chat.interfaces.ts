@@ -63,6 +63,7 @@ export interface CreateMessageLandingResponse {
     message: ChatMessage;
     client: Account;
     chat_agent_enabled: boolean;
+    chat_uuid: string;
 }
 
 export interface ChatMessagesResponse {
