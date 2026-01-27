@@ -15,7 +15,6 @@ export const generateMetadata = async ({ params }: ProviderProfilePageProps): Pr
     const accountSeo = await getAccountSeo(uuid);
 
     if (accountSeo) {
-      console.log(accountSeo);
       return accountSeo.metatags;
     }
 
